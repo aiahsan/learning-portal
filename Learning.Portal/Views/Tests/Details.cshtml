@@ -1,0 +1,148 @@
+﻿@model TestVM
+@{
+    ViewData["Title"] = "Details";
+}
+
+<link href="~/css/questions.css" rel="stylesheet" />
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3>Test Info</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="info" style="margin:20px;">
+                        <label>Test Title : </label> @Model.Title
+                        <br />
+                        <label>Class : </label> @Model.ClassName
+                        <br />
+                        <label>Subject : </label> @Model.SubjectName
+                        <br />
+                        <label>Total Questions : </label> @Model.Questions.Count
+                        <br />
+                        <label>Created At : </label> @Model.CreatedAt
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <div class="pull-left"><button class="btn btn-primary disabled" id="previous">Previous</button></div>
+                    <div class="pull-right"><button class="btn btn-primary" id="next">Next</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+
+
+            <div class="box">
+                <div class="box-header">
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    @for (int i = 0; i < Model.Questions.Count; i++)
+                    {
+                        <div class="quiz question" style="@(i == 0 ? "" : "display: none;")" data-number="@(i+1)" data-id="@Model.Questions[i].Id">
+                            @Html.Raw(Model.Questions[i].Q)
+
+                            <div class="form-group">
+                                <input type="text" class="form-control answer" />
+                            </div>
+                        </div>
+                    }
+                    <div class="quiz question" style="display: none;">
+                        <label>Click submit to view result</label>
+                        <button id="submitTest" class="btn btn-success">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    var totalQuestions = @Model.Questions.Count;
+    var testId = @Model.Id;
+    var questionsAndAnswer = [];
+    $(function () {
+        $("label.btn").on('click', function () {
+            var closest = $(this).closest('.question');
+            NextPrevious(closest, true);
+
+            var radioBox = $(this).find('input:radio');
+            $(closest).addClass('disabled', true);
+            changeAnswer($(closest).data('id'), $(radioBox).val());
+            ShowNext(closest);
+        });
+
+        $('#previous').on('click', function () {
+            if ($(this).hasClass('disabled'))
+                return;
+
+            var closest = $('div.question:visible');
+            NextPrevious(closest, false);
+            ShowPrevious(closest);
+        });
+        $('#next').on('click', function () {
+            if ($(this).hasClass('disabled'))
+                return;
+
+            var closest = $('div.question:visible');
+            ShowNext(closest);
+
+            var answer = $(closest).find('input.answer').val();
+            changeAnswer($(closest).data('id'), answer);
+
+            NextPrevious(closest, true);
+        });
+        $('#submitTest').on('click', function () {
+            $.post('/tests/submitanswers', { Id: testId, answers: questionsAndAnswer }, function (e) {
+                alert(e);
+            });
+        });
+        function ShowPrevious(closest) {
+            $(closest).hide();
+            $(closest).prev().show();
+        }
+        function ShowNext(closest) {
+            $(closest).hide();
+            $(closest).next().show();
+        }
+        function NextPrevious(closest, enablePrevious) {
+
+            if (enablePrevious) {
+                $('#previous').removeClass('disabled');
+            }
+            else if ($(closest).data('number') === 2) {
+                $('#previous').addClass('disabled');
+            }
+
+            if ($(closest).data('number') === totalQuestions) {
+                $('#next').addClass('disabled');
+            }
+            else {
+                $('#next').removeClass('disabled');
+            }
+        }
+        function changeAnswer(question, answer) {
+            var isFound = false;
+            for (var i in questionsAndAnswer) {
+                if (questionsAndAnswer[i].question == question) {
+                    questionsAndAnswer[i].answer = answer;
+                    isFound = true;
+                    console.log('updated records => ' + JSON.stringify(questionsAndAnswer));
+                    break;
+                }
+            }
+            if (!isFound) {
+                questionsAndAnswer.push({ question: question, answer: answer });
+                console.log('inserted records => ' + JSON.stringify(questionsAndAnswer));
+            }
+        }
+    });
+
+</script>
+

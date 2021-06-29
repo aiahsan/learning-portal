@@ -1,0 +1,42 @@
+﻿<!-- Left side column. contains the logo and sidebar -->
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- search form -->
+        <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+        <!-- /.search form -->
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu" data-widget="tree">
+            @if (!User.IsInRole(Role.Student))
+            {
+                <li class="header">ADMINISTRATION</li>
+                <li class="@((string)ViewContext.RouteData.Values["Controller"] == "Users" ? "active" : "")"><a href="/Users/Index"><i class="fa fa-users text-red"></i> <span>Manage @(User.IsInRole(Role.Parent) ? "Teachers" : (User.IsInRole(Role.Teacher) ? "Parents" : "Users"))</span></a></li>
+                @if (User.IsInRole(Role.Parent))
+                {
+                    <li class="@((string)ViewContext.RouteData.Values["Controller"] == "Questions" ? "active" : "")"><a href="/Questions/Index"><i class="fa fa-question-circle text-gray"></i> <span>Manage Questions</span></a></li>
+                    <li class="@((string)ViewContext.RouteData.Values["Controller"] == "Tests" ? "active" : "")"><a href="/Tests/Index"><i class="fa fa-tasks text-yellow"></i> <span>Manage Tests</span></a></li>
+                }
+                @if (User.IsInRole(Role.Admin))
+                {
+                    <li class="@((string)ViewContext.RouteData.Values["Controller"] == "Questions" ? "active" : "")"><a href="/Questions/Index"><i class="fa fa-question-circle text-gray"></i> <span>Manage Questions</span></a></li>
+                    <li class="@((string)ViewContext.RouteData.Values["Controller"] == "Tests" ? "active" : "")"><a href="/Tests/Index"><i class="fa fa-tasks text-yellow"></i> <span>Manage Tests</span></a></li>
+                    <li class="@((string)ViewContext.RouteData.Values["Controller"] == "Classes" ? "active" : "")"><a href="/Classes/Index"><i class="fa fa-university text-green"></i> <span>Manage Classes</span></a></li>
+                    <li class="@((string)ViewContext.RouteData.Values["Controller"] == "Subjects" ? "active" : "")"><a href="/Subjects/Index"><i class="fa fa-book text-blue"></i> <span>Manage Subjects</span></a></li>
+                    <li class="@((string)ViewContext.RouteData.Values["Controller"] == "Topics" ? "active" : "")"><a href="/Topics/Index"><i class="fa fa-comments text-aqua"></i> <span>Manage Topics</span></a></li>
+                    <li class="@((string)ViewContext.RouteData.Values["Controller"] == "AssignStudent" ? "active" : "")"><a href="/AssignStudent/Index"><i class="fa fa-comments text-aqua"></i> <span>Assign Students</span></a></li>
+                    <li class="@((string)ViewContext.RouteData.Values["Controller"] == "AssignClasses" ? "active" : "")"><a href="/AssignClasses/Index"><i class="fa fa-comments text-aqua"></i> <span>Assign Classes</span></a></li>
+                }
+            }
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>

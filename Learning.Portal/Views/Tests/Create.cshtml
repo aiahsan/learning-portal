@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Create";
+}
+<style>
+    .question {
+        margin-top: 10px;
+    }
+</style>
+<section class="content-header">
+    <h1>
+        Create Question
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/Home/Index"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/Tests/Index"><i class="fa fa-users"></i> Manage Questions</a></li>
+        <li class="active">Create</li>
+    </ol>
+</section>
+<section class="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Create Info</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="control-label">Title</label>
+                        <input type="text" id="title" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Select Topic</label>
+                        <select id="topic" asp-items="@ViewData["Topics"] as List<SelectListItem>" class="selectpicker form-control" data-live-search="true">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Questions Info</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" id="questions">
+                </div>
+                <div class="box-footer">
+                    <div class="btn-group pull-right">
+                        <button class="btn btn-default" id="add-question">Add another</button>
+                        <button class="btn btn-primary" id="save">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var options = @(Html.Raw(Json.Serialize(ViewData["Questions"] as List<QuestionVM>)));
+    $(document).ready(function () {
+        var questionCounter = 1;
+        $('#save').click(function () {
+            var questions = [];
+            $.each($('.question'), function (n, i) {
+                questions.push($(i).val());
+            });
+
+            $.post('/Tests/Create', { title: $('#title').val(), topic: $('#topic').val(), questions: questions }, function () {
+            });
+            window.location.href = "~/Tests/index";
+        });
+        $('#add-question').click(function () {
+            addSelect();
+        });
+        $('#topic').change(function () {
+            $(".question").remove();
+            questionCounter = 1;
+            addSelect();
+        });
+        function addSelect() {
+            var selectedOption = parseInt($('#topic').val());
+            let newOptions = [];
+            $.grep(options, function (n, i) {
+                if (n.topic === selectedOption)
+                    newOptions.push("<option value=\"" + n.id + "\">" + n.q + "</option>");
+            });
+            var questionId = 'q-select-' + questionCounter;
+            $('#questions').append('<select class="form-control question ' + questionId + '"></select>');
+            $('.' + questionId).append(newOptions);
+            $('.' + questionId).addClass('selectpicker');
+            $('.' + questionId).attr('data-live-search', 'true');
+            $('.' + questionId).selectpicker('refresh');
+            questionCounter++;
+        }
+    });
+</script>
+

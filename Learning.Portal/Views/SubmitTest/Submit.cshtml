@@ -1,0 +1,68 @@
+﻿@model Test
+
+@{ ViewData["Title"] = "Submit"; }
+<style>
+    .answers
+    {
+        max-width:400px
+    }
+</style>
+<section class="content-header">
+    <h1>
+        @Model.Title
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/Home/Index"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="/Classes/Index"><i class="fa fa-users"></i> Manage Classes</a></li>
+        <li class="active">Create Class</li>
+    </ol>
+</section>
+<section class="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Test</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+                        @foreach(var item in Model.TestQuestions)
+                        {
+                    <div class="container">
+                        <label>Question</label>
+                        @Html.Raw(item.Question.Q)
+                        <br />
+                        <label>Answer</label>
+                        @if (item.Question.IsMcq == true)
+                        {
+                            <input type="text" class="form-control answers" placeholder="Input Correct Option" id="@item.Question.Id" />
+
+                        }
+                        else
+                        {
+                            <textarea class="form-control answers" id="@item.Question.Id" placeholder="Answer" ></textarea>
+                            
+                        }
+                    </div>
+                        }
+
+                        <div class="form-group">
+                            <input type="submit" value="Submit" class="btn btn-default" />
+                        </div>
+                    </form>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+
+</script>

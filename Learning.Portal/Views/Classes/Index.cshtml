@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Class>
+
+@{
+    ViewData["Title"] = "Classes";
+}
+
+<section class="content-header">
+    <h1>
+        Manage Classes
+        <small>list view</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="/Home/Index"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Manage Classes</li>
+    </ol>
+</section>
+<section class="content">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Classes</h3>
+
+                    <a asp-action="Create" class="btn btn-primary pull-right">Create</a>
+                    <div class="clearfix"></div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="table" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(model => model.Id)</th>
+                                <th>@Html.DisplayNameFor(model => model.Title)</th>
+                                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                                <th>Available Topics</th>
+                                <th>@Html.DisplayNameFor(model => model.CreatedAt)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                                    <td>@Html.DisplayFor(model => item.Topics.Count)</td>
+                                    <td>@item.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>
+                                        <a asp-action="Details" class="btn btn-success" asp-route-id="@item.Id">Details</a>
+                                        <a asp-action="Edit" class="btn btn-primary" asp-route-id="@item.Id">Edit</a>
+                                        <a asp-action="Delete" class="btn btn-danger" asp-route-id="@item.Id">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+    </div>
+</section>
+<script>
+    $(function () {
+        $('#table').DataTable({
+            'paging': true,
+            'lengthChange': true,
+            'searching': true,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false
+        });
+    });
+</script>
